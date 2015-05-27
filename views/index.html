@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+
+<style type="text/css">
+    .title{font-family: '微软雅黑';font-size: 25px;  color: #000;}
+    .content{font-family: '微软雅黑';font-size: 18px;  color: #000;}
+    .answer{font-family: '微软雅黑';font-size: 18px;  color: #fff;}
+</style>
+
+<script type="text/javascript">
+    function myfunction(str)
+    {
+        txt = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+        return txt
+    }
+</script>
+
+</head>
+<body>
+        {{range $index, $elem := .Topics}}
+        <div class="title">
+             {{$elem.Title }}
+        </div>
+
+
+        <div class="answer">
+            {{$elem.Answer}}
+        </div>
+        <br>
+
+        <div class="content">
+        <script type="text/javascript">
+         document.write(  myfunction({{$elem.Content}}))
+        </script>
+        </div>
+
+        <br>
+
+        {{end}}
+        <br>
+<div>
+    <form action="" method="get">
+    <label><input name="answer" type="radio" value="" />A </label>
+    <label><input name="answer" type="radio" value="" />B </label>
+    <label><input name="answer" type="radio" value="" />C </label>
+    <label><input name="answer" type="radio" value="" />D </label>
+        <input type="submit" value="提 交" />
+
+    </form>
+</div>
+
+
+</body>
+</html>
