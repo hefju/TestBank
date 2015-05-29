@@ -6,52 +6,222 @@
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 
 <style type="text/css">
-    .title{font-family: '微软雅黑';font-size: 25px;  color: #000;}
-    .content{font-family: '微软雅黑';font-size: 18px;  color: #000;}
-    .answer{font-family: '微软雅黑';font-size: 18px;  color: #fff;}
-</style>
+    .main_panel_hide{border:1px solid pink; display:none;}
+    .main_panel_display{border:1px solid pink;}
 
-<script type="text/javascript">
-    function myfunction(str)
-    {
-        txt = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
-        return txt
-    }
-</script>
+    div#container{width:980px;}
+    div#header {background-color:#99bbbb;text-align: center;height: 50px;}
+    div#menu {background-color:#ffff99; height:1124px; width:100px; float:left;}
+    div#content {background-color:#EEEEEE; height:1024px; width:600px; float:left;padding: 10px 10px;}
+    div#footer {background-color:#99bbbb; clear:both; height:100px; text-align:center;}
+
+    h1 {margin:0;}
+    body{margin:0;padding:0;}
+    ul {margin:0;padding: 0px 5px; }
+    li {list-style:none;padding: 10px 0px;}
+
+    table,table td,table th{border:1px solid #000;border-collapse:collapse;}
+    td{width: 30px;}
+</style>
 
 </head>
 <body>
-        {{range $index, $elem := .Topics}}
-        <div class="title">
-             {{$elem.Title }}
-        </div>
+
+<script type="text/javascript">
+    $("document").ready(function(){
+        $("#operation_panel").hide();
+    });
+
+    //根据索引获取题目
+    function GetTopicbyIndex(){
+        i= document.getElementById('txtindex').value
+        var url="/one/"+i;
+
+        var data={};
+        $.get(url,data,function(res){
+        var json=res.topic;
+        $("#txttitle").html(json.Title);
+        str = json.Content.replace(/(?:\r\n|\r|\n)/g, '<br />');
+        $("#txtcontent").html(str);
+        });
+    }
+
+    //打开顺序模式
+    function SMode(){
+      mymode="顺序模式"
+        $("#operation_panel").show();
+        $("#mode_panel").css("display", "none");
+        $("#normal_panel").css("display", "none");
+        $("#Random_panel").css("display", "none");
+        $("#Sequential_panel").css("display", "block");
+
+        GetTopicbyIndex();
+    }
+
+    var mymode="未设置"
+    //打开随机模式
+    function RMode(){
+        mymode="随机模式"
+
+        $("#operation_panel").show();
+        $("#mode_panel").css("display", "none");
+        $("#normal_panel").css("display", "none");
+        $("#Sequential_panel").css("display", "none");
+        $("#Random_panel").css("display", "block");
+
+        GetTopicbyIndex();
+    }
+</script>
+
+<div id="container">
+
+    <div id="header">
+        <h1>2015年佛汽集团安全知识竞赛题库</h1>
+    </div>
+
+    <div id="menu">
+
+        <ul>
+            <li>  <a href="#" onclick="RMode();">随机模式</a></li>
+            <li>  <a href="#" onclick="SMode();">顺序模式</a></li>
+
+            <li><a href="javascript:alert('学再多,不精,有什么用?');">关于</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
 
 
-        <div class="answer">
-            {{$elem.Answer}}
+        <div>
+            <div class="main_panel_display0" id="normal_panel">
+                欢迎界面进入
+                2015年佛汽集团安全知识竞赛题库
+            </div>
+
+            <div class="main_panel_hide" id="Random_panel">
+
+                <div>
+                    <div class="title">
+                        <label id="txttitle">Male</label>
+
+                    </div>
+                    <br>
+                    <div class="content">
+                        <label id="txtcontent">Male</label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="main_panel_hide" id="Sequential_panel">
+                顺序模式面板
+            </div>
+
+            <div id="operation_panel">
+                <br>
+                <input type="text" value="1" id="txtindex"/>
+                <input type="submit" value="获取试题" onclick="GetTopicbyIndex()"/>
+
+                <input type="submit" value="上一题" onclick="PerTopic()"/>
+                <input type="submit" value="下一题" onclick="NextTopic()"/>
+            </div>
         </div>
         <br>
 
-        <div class="content">
-        <script type="text/javascript">
-         document.write(  myfunction({{$elem.Content}}))
-        </script>
-        </div>
+        <input type="submit" value="随机数组" onclick="GetRandom()"/>
+        <div id="div"></div>
 
-        <br>
+    </div>
 
-        {{end}}
-        <br>
-<div>
-    <form action="" method="get">
-    <label><input name="answer" type="radio" value="" />A </label>
-    <label><input name="answer" type="radio" value="" />B </label>
-    <label><input name="answer" type="radio" value="" />C </label>
-    <label><input name="answer" type="radio" value="" />D </label>
-        <input type="submit" value="提 交" />
 
-    </form>
+
+
+
+
+<div id="footer">Copyright hefju.com.cn</div>
 </div>
+<script type="text/javascript">
+
+function GetRandom(){
+ var arr=   RandomNumbers(1,760,100);
+
+    var columncount=20;
+var row=arr.length/columncount;
+var index=0;
+
+var str = "<table border=1>";
+for(var j=0;j<row;j++){
+    str += "<tr>";
+    for(var i=0;i<columncount&&index<arr.length;i++){
+        index=j*columncount+i+1;
+        str += "<td>"+index+"</td>";
+    };
+    str += "</tr>";
+
+    index=0;
+    str += "<tr>";
+    for(var i=0;i<columncount&&index<arr.length+1;i++){
+        index=j*columncount+i+1;
+        str += "<td>"+"&nbsp;"+"</td>";
+        index++;
+    };
+    str += "</tr>";
+}
+str +="</table>";
+document.getElementById("div").innerHTML = str;
+
+}
+
+function RandomNumbers (startNum, endNum, count){
+
+    var originalArray=new Array;//原數組
+    for (var i=startNum;i<endNum;i++){
+        originalArray[i]=i;
+    }
+
+    var newArray=new Array;
+    for (var num,i=0;i<count;i++){
+    do{
+    num=Math.floor(Math.random()*originalArray.length);
+    }while(originalArray[num]==null);
+
+    newArray[i]=originalArray[num]
+    originalArray[num]=null;
+    }
+
+    return newArray;
+}
+
+
+//根据索引获取题目
+function NextTopic(){
+alert(mymode);
+<!--i= document.getElementById('txtindex').value-->
+<!--var url="/one/"+i;-->
+
+<!--var data={};-->
+<!--$.get(url,data,function(res){-->
+<!--var json=res.topic;-->
+<!--$("#txttitle").html(json.Title);-->
+<!--str = json.Content.replace(/(?:\r\n|\r|\n)/g, '<br />');-->
+<!--$("#txtcontent").html(str);-->
+<!--});-->
+}
+
+function NextTopic(){
+alert(mymode);
+}
+
+</script>
+
+<br><br><br><br>
+
+
+
+
+
+
+
+
 
 
 </body>

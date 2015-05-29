@@ -2,7 +2,7 @@ package models
 import (
     "log"
   //  "strings"
-    "fmt"
+ //   "fmt"
 )
 
 type Topics struct {
@@ -33,6 +33,6 @@ func GetOne(index int)*Topics{
     if err!=nil{
         log.Fatal(err)
     }
-    fmt.Println("topic:",topic)
+    //fmt.Println("topic:",topic)
     return  topic
 }
