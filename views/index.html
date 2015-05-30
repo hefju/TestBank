@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-
 <style type="text/css">
     .main_panel_hide{border:1px solid pink; display:none;}
     .main_panel_display{border:1px solid pink;}
 
     div#container{width:980px;}
     div#header {background-color:#99bbbb;text-align: center;height: 50px;}
-    div#menu {background-color:#ffff99; height:1124px; width:100px; float:left;}
-    div#content {background-color:#EEEEEE; height:1024px; width:600px; float:left;padding: 10px 10px;}
-    div#footer {background-color:#99bbbb; clear:both; height:100px; text-align:center;}
+    div#menu {background-color:#E0E0E0; height:1124px; width:100px; float:left;}
+    div#content {background-color:#EEE; height:1024px; width:600px; float:left;padding: 10px 10px;}
+    div#footer {background-color:#9bb; clear:both; height:100px; text-align:center;}
+
+    #txtindex{border-left:0px;border-top:0px;border-right:0px;border-bottom:1px}
 
     h1 {margin:0;}
     body{margin:0;padding:0;}
@@ -23,7 +24,6 @@
     table,table td,table th{border:1px solid #000;border-collapse:collapse;}
     td{width: 30px;}
 </style>
-
 </head>
 <body>
 
@@ -34,8 +34,8 @@
 
     //根据索引获取题目
     function GetTopicbyIndex(){
-        i= document.getElementById('txtindex').value
-        var url="/one/"+i;
+        var index=topic_array[topic_index-1]; //在随机数组取数
+        var url="/one/"+index;
 
         var data={};
         $.get(url,data,function(res){
@@ -48,7 +48,7 @@
 
     //打开顺序模式
     function SMode(){
-      mymode="顺序模式"
+      mymode="顺序模式";
         $("#operation_panel").show();
         $("#mode_panel").css("display", "none");
         $("#normal_panel").css("display", "none");
@@ -58,10 +58,11 @@
         GetTopicbyIndex();
     }
 
-    var mymode="未设置"
+    var mymode="未设置";
     //打开随机模式
     function RMode(){
-        mymode="随机模式"
+        mymode="随机模式";
+
 
         $("#operation_panel").show();
         $("#mode_panel").css("display", "none");
@@ -69,6 +70,8 @@
         $("#Sequential_panel").css("display", "none");
         $("#Random_panel").css("display", "block");
 
+
+        GetRandom();
         GetTopicbyIndex();
     }
 </script>
@@ -98,8 +101,10 @@
                 2015年佛汽集团安全知识竞赛题库
             </div>
 
-            <div class="main_panel_hide" id="Random_panel">
 
+
+            <div class="main_panel_hide" id="Random_panel">
+                第<span id="txtindex">1</span>题
                 <div>
                     <div class="title">
                         <label id="txttitle">Male</label>
@@ -118,7 +123,7 @@
 
             <div id="operation_panel">
                 <br>
-                <input type="text" value="1" id="txtindex"/>
+
                 <input type="submit" value="获取试题" onclick="GetTopicbyIndex()"/>
 
                 <input type="submit" value="上一题" onclick="PerTopic()"/>
@@ -141,14 +146,17 @@
 </div>
 <script type="text/javascript">
 
+    var topic_array=new Array; //题库索引数组
+    var topic_index=1;         //当前题库索引
 function GetRandom(){
- var arr=   RandomNumbers(1,760,100);
+    var arr=   RandomNumbers(1,760,100);
+    var columncount=20;//每行20列
+    var row=arr.length/columncount;//需要输出多少行
+    var index=0; //填充数组时的索引. 如果索引大于数组最大值就跳出
 
-    var columncount=20;
-var row=arr.length/columncount;
-var index=0;
+    topic_array=arr;
 
-var str = "<table border=1>";
+var str = "<table>";
 for(var j=0;j<row;j++){
     str += "<tr>";
     for(var i=0;i<columncount&&index<arr.length;i++){
@@ -161,7 +169,7 @@ for(var j=0;j<row;j++){
     str += "<tr>";
     for(var i=0;i<columncount&&index<arr.length+1;i++){
         index=j*columncount+i+1;
-        str += "<td>"+"&nbsp;"+"</td>";
+        str += "<td>"+arr[i]+"</td>";
         index++;
     };
     str += "</tr>";
@@ -177,7 +185,6 @@ function RandomNumbers (startNum, endNum, count){
     for (var i=startNum;i<endNum;i++){
         originalArray[i]=i;
     }
-
     var newArray=new Array;
     for (var num,i=0;i<count;i++){
     do{
@@ -187,14 +194,20 @@ function RandomNumbers (startNum, endNum, count){
     newArray[i]=originalArray[num]
     originalArray[num]=null;
     }
-
     return newArray;
 }
 
 
 //根据索引获取题目
 function NextTopic(){
-alert(mymode);
+    topic_index++;
+    $( "#txtindex" ).html(topic_index);
+
+    if(topic_index>topic_array.length) {
+        topic_index = topic_array.length;
+    }
+    GetTopicbyIndex();
+    //alert(mymode);
 <!--i= document.getElementById('txtindex').value-->
 <!--var url="/one/"+i;-->
 
@@ -207,8 +220,15 @@ alert(mymode);
 <!--});-->
 }
 
-function NextTopic(){
-alert(mymode);
+function PerTopic(){
+    topic_index--;
+    $( "#txtindex" ).html(topic_index);
+    if(topic_index<1) {
+        topic_index = 1;
+    }
+    GetTopicbyIndex();
+
+//alert(mymode);
 }
 
 </script>
